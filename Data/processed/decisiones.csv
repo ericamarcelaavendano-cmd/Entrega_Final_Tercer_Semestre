@@ -1,0 +1,21 @@
+paso,columna,accion,filas_afectadas,justificacion
+numericos,asistencia_pct,quitar símbolo %,300,El % convierte la columna en texto y no deja calcular promedios ni cuartiles.
+numericos,asistencia_pct,guion a nulo y convertir a número,202,El guion significa 'sin dato'; como nulo real pandas lo reconoce y no lo cuenta como valor.
+numericos,horas_trabajo_semana,guion a nulo y convertir a número,2822,El guion es un faltante disfrazado; se trata en el paso 8 según si el estudiante trabaja.
+numericos,distancia_km,999 a nulo,152,999 es un código de 'sin dato'; dejarlo inflaría el promedio de distancia.
+categorias,programa,"strip, lower y diccionario de variantes",260,La misma categoría escrita de varias formas se contaría como grupos distintos.
+categorias,jornada,"strip, lower y diccionario de variantes",485,La misma categoría escrita de varias formas se contaría como grupos distintos.
+categorias,genero,"strip, lower y diccionario de variantes",559,La misma categoría escrita de varias formas se contaría como grupos distintos.
+categorias,ciudad_procedencia,"strip, lower y diccionario de variantes",542,La misma categoría escrita de varias formas se contaría como grupos distintos.
+fechas,fecha_matricula,convertir con dos formatos y unir con fillna,3052,"Con un solo formato, las fechas DD/MM/AAAA quedarían vacías."
+duplicados,todas,eliminar filas repetidas,150,Tienen el mismo id_estudiante: contarlas dos veces altera tasas y promedios.
+faltantes,promedio_acumulado,eliminar filas,298,Una nota no se puede inventar; imputarla cambiaría el promedio por jornada.
+faltantes,ciudad_procedencia,reemplazar por 'Sin dato',96,Eliminar la fila perdería sus demás datos; inventar el dato sería falso.
+faltantes,tipo_colegio,reemplazar por 'Sin dato',145,Eliminar la fila perdería sus demás datos; inventar el dato sería falso.
+faltantes,motivo_retiro,dejar los nulos,0,Solo aplica a desertores; en activos y graduados el nulo es correcto.
+imposibles,promedio_acumulado,eliminar promedios mayores a 5,15,Fuera de la escala 0 a 5; convertirlos sería suponer una escala que no conozco.
+imposibles,edad,fuera de 15 a 60 a mediana (22),12,Son errores de registro; la mediana no se afecta por los extremos.
+imposibles,horas_trabajo_semana,nulo a 0 si no trabaja,2703,Quien no trabaja tiene 0 horas de trabajo; no es un dato perdido.
+imposibles,horas_trabajo_semana,mayores a 100 y nulos restantes a mediana de quienes trabajan (24),29,Más de 100 horas no es creíble; la mediana de los que trabajan es el valor típico del grupo.
+variables,desertor,crear True/False desde estado,3136,El promedio de True/False da directamente la tasa de deserción.
+variables,cuartil_asistencia,dividir asistencia en 4 grupos con qcut,9490,Grupos de tamaño parecido para comparar la deserción; Q1 es la asistencia más baja.

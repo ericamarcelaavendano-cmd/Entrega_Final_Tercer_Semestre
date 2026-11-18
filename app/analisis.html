@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Análisis de deserción · Informe</title>
+<style>
+:root{
+  --marino:#0b1f3a; --marino-2:#13305a; --acento:#2563eb; --acento-suave:#e8efff;
+  --tinta:#0f172a; --texto:#334155; --gris:#64748b; --linea:#e2e8f0; --fondo:#f5f7fa;
+  --blanco:#ffffff; --alerta:#b42318; --ok:#0f766e;
+  --radio:10px; --sombra:0 1px 2px rgba(15,23,42,.06),0 4px 16px rgba(15,23,42,.05);
+  --fuente:"Segoe UI","Inter",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--fuente);color:var(--texto);background:var(--fondo);
+     line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased}
+h1,h2,h3{color:var(--tinta);line-height:1.2;margin:0;letter-spacing:-.01em}
+a{color:var(--acento)}
+.contenedor{width:100%;max-width:1120px;margin:0 auto;padding:0 24px}
+.kicker{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--acento);margin:0 0 8px}
+
+/* ---------- Portada ---------- */
+.hero{min-height:100vh;display:flex;flex-direction:column;color:#dbe4f3;
+      background:
+        radial-gradient(900px 500px at 85% 10%,rgba(37,99,235,.28),transparent 60%),
+        linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px) 0 0/48px 48px,
+        linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px) 0 0/48px 48px,
+        var(--marino)}
+.hero-top{display:flex;justify-content:space-between;align-items:center;padding:28px 0;font-size:14px}
+.marca{display:flex;align-items:center;gap:10px;color:#fff;font-weight:600}
+.marca i{width:28px;height:28px;border-radius:7px;background:var(--acento);display:grid;place-items:center;
+         font-style:normal;font-size:13px}
+.hero-top span{color:#8ea3c4}
+.hero-cuerpo{flex:1;display:grid;grid-template-columns:1.25fr 1fr;gap:56px;align-items:center;padding:24px 0 48px}
+.hero .kicker{color:#7fa7ff}
+.hero h1{color:#fff;font-size:clamp(34px,5.2vw,58px);font-weight:700;letter-spacing:-.025em;margin-bottom:20px}
+.hero .lead{font-size:19px;color:#b6c4dc;max-width:560px;margin:0 0 36px}
+.acciones{display:flex;gap:14px;flex-wrap:wrap}
+.boton{display:inline-flex;align-items:center;gap:10px;padding:15px 26px;border-radius:8px;font-weight:600;
+       font-size:16px;text-decoration:none;transition:transform .15s ease,background .15s ease}
+.boton.primario{background:#fff;color:var(--marino)}
+.boton.primario:hover{transform:translateY(-1px);background:#e9eefb}
+.boton.secundario{color:#fff;border:1px solid rgba(255,255,255,.25)}
+.boton.secundario:hover{background:rgba(255,255,255,.06)}
+.panel{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:8px;
+       backdrop-filter:blur(4px)}
+.panel-kpi{display:flex;justify-content:space-between;align-items:baseline;padding:20px 22px;
+           border-bottom:1px solid rgba(255,255,255,.08)}
+.panel-kpi:last-child{border-bottom:none}
+.panel-kpi span{font-size:14px;color:#8ea3c4}
+.panel-kpi b{font-size:30px;color:#fff;font-weight:600;font-variant-numeric:tabular-nums}
+.panel-kpi b.alerta{color:#ffb4a8}
+.metodo{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid rgba(255,255,255,.1)}
+.metodo div{padding:24px 24px 30px 0}
+.metodo b{display:block;color:#fff;font-weight:600;margin-bottom:4px}
+.metodo small{color:#8ea3c4;font-size:14px}
+.metodo em{font-style:normal;color:#7fa7ff;font-size:13px;font-weight:600;display:block;margin-bottom:10px}
+
+/* ---------- Página de análisis ---------- */
+.nav{position:sticky;top:0;z-index:10;background:rgba(11,31,58,.97);backdrop-filter:blur(6px)}
+.nav .contenedor{display:flex;align-items:center;gap:28px;height:60px;overflow-x:auto}
+.nav .marca{white-space:nowrap}
+.nav a.link{color:#a9b8d1;text-decoration:none;font-size:14px;white-space:nowrap}
+.nav a.link:hover{color:#fff}
+.portadilla{background:var(--marino);color:#b6c4dc;padding:56px 0 96px}
+.portadilla h1{color:#fff;font-size:clamp(28px,4vw,40px);margin-bottom:12px}
+.portadilla .kicker{color:#7fa7ff}
+.portadilla p{max-width:640px;margin:0}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:-56px}
+.kpi{background:var(--blanco);border:1px solid var(--linea);border-radius:var(--radio);padding:22px 24px;box-shadow:var(--sombra)}
+.kpi span{display:block;font-size:13px;color:var(--gris);margin-bottom:6px}
+.kpi b{font-size:32px;color:var(--tinta);font-weight:650;font-variant-numeric:tabular-nums}
+.kpi small{display:block;color:var(--gris);font-size:13px;margin-top:4px}
+.kpi.resaltado{border-top:3px solid var(--acento)}
+.seccion{padding:72px 0 24px;scroll-margin-top:60px}
+.seccion-cab{display:grid;grid-template-columns:72px 1fr;gap:8px;margin-bottom:28px}
+.numero{font-size:15px;font-weight:600;color:var(--gris);font-variant-numeric:tabular-nums;padding-top:2px}
+.seccion-cab h2{font-size:30px;margin-bottom:10px}
+.intro{color:var(--gris);max-width:720px;margin:0}
+.bloque{margin-left:80px}
+h3{font-size:19px;margin:40px 0 4px}
+h3 + .sub{color:var(--gris);font-size:14px;margin:0 0 14px}
+.tabla-wrap{overflow-x:auto;background:var(--blanco);border:1px solid var(--linea);border-radius:var(--radio);box-shadow:var(--sombra)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--gris);font-weight:600;
+   text-align:left;padding:12px 16px;border-bottom:1px solid var(--linea);background:#fbfcfe;white-space:nowrap}
+td{padding:12px 16px;border-bottom:1px solid var(--linea);color:var(--tinta);vertical-align:top}
+tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:#f8faff}
+.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+td.just{color:var(--texto);min-width:280px}
+.chip{display:inline-block;font-size:12px;padding:2px 9px;border-radius:999px;background:var(--acento-suave);
+      color:var(--marino-2);font-weight:600;white-space:nowrap}
+.barra{display:inline-block;width:110px;height:6px;background:#eef2f7;border-radius:3px;vertical-align:middle;margin-left:12px}
+.barra span{display:block;height:100%;background:#94a3b8;border-radius:3px}
+.barra.destacada span{background:var(--acento)}
+.hallazgo{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start;background:var(--blanco);
+          border:1px solid var(--linea);border-left:3px solid var(--acento);border-radius:var(--radio);
+          padding:16px 20px;margin:16px 0 0}
+.hallazgo p{margin:0;color:var(--tinta)}
+.etiqueta{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--acento);padding-top:3px}
+.nota{font-size:14px;color:var(--gris);margin:12px 0 0}
+figure{margin:20px 0 0;background:var(--blanco);border:1px solid var(--linea);border-radius:var(--radio);
+       padding:20px;box-shadow:var(--sombra)}
+figcaption{display:flex;flex-direction:column;margin-bottom:14px}
+figcaption strong{color:var(--tinta)}
+figcaption span{color:var(--gris);font-size:14px}
+figure img{width:100%;height:auto;display:block}
+.rejilla{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.tarjeta{background:var(--blanco);border:1px solid var(--linea);border-radius:var(--radio);padding:24px;box-shadow:var(--sombra)}
+.tarjeta h3{margin:0 0 10px;font-size:17px}
+.tarjeta p{margin:0;font-size:15px}
+.tarjeta .kicker{margin-bottom:12px}
+.aviso{background:#fff7ed;border:1px solid #fed7aa;padding:12px 16px;border-radius:8px}
+footer{margin-top:80px;background:var(--marino);color:#8ea3c4;font-size:14px}
+footer .contenedor{display:flex;justify-content:space-between;gap:16px;padding:32px 24px;flex-wrap:wrap}
+footer a{color:#fff;text-decoration:none}
+
+@media (max-width:900px){
+  .hero-cuerpo{grid-template-columns:1fr;gap:36px}
+  .metodo{grid-template-columns:repeat(2,1fr)}
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .rejilla{grid-template-columns:1fr}
+  .bloque{margin-left:0}
+  .seccion-cab{grid-template-columns:1fr}
+}
+@media (max-width:520px){
+  .contenedor{padding:0 16px}
+  .kpis,.metodo{grid-template-columns:1fr}
+  .hero-top span{display:none}
+}
+@media print{
+  .nav{position:static} .hero{min-height:auto} .kpi,figure,.tabla-wrap{box-shadow:none}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav"><div class="contenedor">
+  <a class="marca" href="index.html" style="text-decoration:none"><i>RE</i>Retención Estudiantil</a>
+  <a class="link" href="#calidad">Calidad</a>
+  <a class="link" href="#decisiones">Decisiones</a>
+  <a class="link" href="#preguntas">Resultados</a>
+  <a class="link" href="#reflexiones">Reflexiones</a>
+</div></nav>
+
+<header class="portadilla"><div class="contenedor">
+  <p class="kicker">Informe de análisis</p>
+  <h1>Factores asociados a la deserción estudiantil</h1>
+  <p>Resultados obtenidos sobre el dataset limpio. Cada cifra va acompañada del número de estudiantes
+  del grupo, porque una tasa sin su tamaño no se puede interpretar.</p>
+</div></header>
+
+
+<div class="contenedor">
+  <div class="kpis">
+    <div class="kpi resaltado"><span>Estudiantes en el dataset limpio</span><b>9.687</b><small>Registros confiables para el análisis</small></div>
+    <div class="kpi"><span>Desertores</span><b>3.136</b><small>Estado igual a «desertor»</small></div>
+    <div class="kpi"><span>Tasa general de deserción</span><b>32,4 %</b><small>Línea base de comparación</small></div>
+    <div class="kpi"><span>Decisiones de limpieza</span><b>20</b><small>Registradas en decisiones.csv</small></div>
+  </div>
+</div>
+
+<section id="calidad" class="seccion">
+  <div class="contenedor">
+    <header class="seccion-cab">
+      <span class="numero">01</span>
+      <div>
+        <p class="kicker">Diagnóstico</p>
+        <h2>Calidad de los datos originales</h2>
+        <p class="intro">Antes de limpiar se revisó el dataset sin modificarlo, para distinguir nulos reales, faltantes disfrazados, valores imposibles, duplicados, errores tipográficos y formatos inconsistentes.</p>
+      </div>
+    </header>
+    <div class="bloque">
+  <figure><figcaption><strong>Mapa de faltantes del dataset original</strong><span>Cada franja marca una celda vacía. Los guiones y el valor 999 no aparecen: son faltantes disfrazados.</span></figcaption><img src="../Data/processed/graficos/mapa_faltantes.png" alt="Mapa de faltantes del dataset original"></figure>
+  <figure><figcaption><strong>Distribuciones antes y después de la limpieza</strong><span>Desaparecen los promedios fuera de la escala 0 a 5 y las edades imposibles.</span></figcaption><img src="../Data/processed/graficos/distribuciones_antes_despues.png" alt="Distribuciones antes y después de la limpieza"></figure>
+</div>
+  </div>
+</section>
+
+<section id="decisiones" class="seccion">
+  <div class="contenedor">
+    <header class="seccion-cab">
+      <span class="numero">02</span>
+      <div>
+        <p class="kicker">Limpieza</p>
+        <h2>Decisiones de limpieza</h2>
+        <p class="intro">Cada cambio quedó registrado con el número de filas afectadas y su justificación, para que cualquier persona pueda revisar el proceso.</p>
+      </div>
+    </header>
+    <div class="bloque"><div class="tabla-wrap"><table><thead><tr><th class="">Paso</th><th class="">Columna</th><th class="">Acción</th><th class="n">Filas</th><th class="">Justificación</th></tr></thead><tbody><tr><td class=""><span class="chip">numericos</span></td><td class="">asistencia_pct</td><td class="">quitar símbolo %</td><td class="n">300</td><td class=""><span class="just">El % convierte la columna en texto y no deja calcular promedios ni cuartiles.</span></td></tr><tr><td class=""><span class="chip">numericos</span></td><td class="">asistencia_pct</td><td class="">guion a nulo y convertir a número</td><td class="n">202</td><td class=""><span class="just">El guion significa &#x27;sin dato&#x27;; como nulo real pandas lo reconoce y no lo cuenta como valor.</span></td></tr><tr><td class=""><span class="chip">numericos</span></td><td class="">horas_trabajo_semana</td><td class="">guion a nulo y convertir a número</td><td class="n">2.822</td><td class=""><span class="just">El guion es un faltante disfrazado; se trata en el paso 8 según si el estudiante trabaja.</span></td></tr><tr><td class=""><span class="chip">numericos</span></td><td class="">distancia_km</td><td class="">999 a nulo</td><td class="n">152</td><td class=""><span class="just">999 es un código de &#x27;sin dato&#x27;; dejarlo inflaría el promedio de distancia.</span></td></tr><tr><td class=""><span class="chip">categorias</span></td><td class="">programa</td><td class="">strip, lower y diccionario de variantes</td><td class="n">260</td><td class=""><span class="just">La misma categoría escrita de varias formas se contaría como grupos distintos.</span></td></tr><tr><td class=""><span class="chip">categorias</span></td><td class="">jornada</td><td class="">strip, lower y diccionario de variantes</td><td class="n">485</td><td class=""><span class="just">La misma categoría escrita de varias formas se contaría como grupos distintos.</span></td></tr><tr><td class=""><span class="chip">categorias</span></td><td class="">genero</td><td class="">strip, lower y diccionario de variantes</td><td class="n">559</td><td class=""><span class="just">La misma categoría escrita de varias formas se contaría como grupos distintos.</span></td></tr><tr><td class=""><span class="chip">categorias</span></td><td class="">ciudad_procedencia</td><td class="">strip, lower y diccionario de variantes</td><td class="n">542</td><td class=""><span class="just">La misma categoría escrita de varias formas se contaría como grupos distintos.</span></td></tr><tr><td class=""><span class="chip">fechas</span></td><td class="">fecha_matricula</td><td class="">convertir con dos formatos y unir con fillna</td><td class="n">3.052</td><td class=""><span class="just">Con un solo formato, las fechas DD/MM/AAAA quedarían vacías.</span></td></tr><tr><td class=""><span class="chip">duplicados</span></td><td class="">todas</td><td class="">eliminar filas repetidas</td><td class="n">150</td><td class=""><span class="just">Tienen el mismo id_estudiante: contarlas dos veces altera tasas y promedios.</span></td></tr><tr><td class=""><span class="chip">faltantes</span></td><td class="">promedio_acumulado</td><td class="">eliminar filas</td><td class="n">298</td><td class=""><span class="just">Una nota no se puede inventar; imputarla cambiaría el promedio por jornada.</span></td></tr><tr><td class=""><span class="chip">faltantes</span></td><td class="">ciudad_procedencia</td><td class="">reemplazar por &#x27;Sin dato&#x27;</td><td class="n">96</td><td class=""><span class="just">Eliminar la fila perdería sus demás datos; inventar el dato sería falso.</span></td></tr><tr><td class=""><span class="chip">faltantes</span></td><td class="">tipo_colegio</td><td class="">reemplazar por &#x27;Sin dato&#x27;</td><td class="n">145</td><td class=""><span class="just">Eliminar la fila perdería sus demás datos; inventar el dato sería falso.</span></td></tr><tr><td class=""><span class="chip">faltantes</span></td><td class="">motivo_retiro</td><td class="">dejar los nulos</td><td class="n">0</td><td class=""><span class="just">Solo aplica a desertores; en activos y graduados el nulo es correcto.</span></td></tr><tr><td class=""><span class="chip">imposibles</span></td><td class="">promedio_acumulado</td><td class="">eliminar promedios mayores a 5</td><td class="n">15</td><td class=""><span class="just">Fuera de la escala 0 a 5; convertirlos sería suponer una escala que no conozco.</span></td></tr><tr><td class=""><span class="chip">imposibles</span></td><td class="">edad</td><td class="">fuera de 15 a 60 a mediana (22)</td><td class="n">12</td><td class=""><span class="just">Son errores de registro; la mediana no se afecta por los extremos.</span></td></tr><tr><td class=""><span class="chip">imposibles</span></td><td class="">horas_trabajo_semana</td><td class="">nulo a 0 si no trabaja</td><td class="n">2.703</td><td class=""><span class="just">Quien no trabaja tiene 0 horas de trabajo; no es un dato perdido.</span></td></tr><tr><td class=""><span class="chip">imposibles</span></td><td class="">horas_trabajo_semana</td><td class="">mayores a 100 y nulos restantes a mediana de quienes trabajan (24)</td><td class="n">29</td><td class=""><span class="just">Más de 100 horas no es creíble; la mediana de los que trabajan es el valor típico del grupo.</span></td></tr><tr><td class=""><span class="chip">variables</span></td><td class="">desertor</td><td class="">crear True/False desde estado</td><td class="n">3.136</td><td class=""><span class="just">El promedio de True/False da directamente la tasa de deserción.</span></td></tr><tr><td class=""><span class="chip">variables</span></td><td class="">cuartil_asistencia</td><td class="">dividir asistencia en 4 grupos con qcut</td><td class="n">9.490</td><td class=""><span class="just">Grupos de tamaño parecido para comparar la deserción; Q1 es la asistencia más baja.</span></td></tr></tbody></table></div></div>
+  </div>
+</section>
+
+<section id="preguntas" class="seccion">
+  <div class="contenedor">
+    <header class="seccion-cab">
+      <span class="numero">03</span>
+      <div>
+        <p class="kicker">Resultados</p>
+        <h2>Las cinco preguntas de la institución</h2>
+        <p class="intro">Respuestas calculadas con groupby() y agg() sobre el dataset limpio.</p>
+      </div>
+    </header>
+    <div class="bloque">
+  <h3>1. ¿Qué programa presenta la tasa de deserción más alta?</h3>
+  <p class="sub">Tasa de deserción y tamaño de cada programa.</p>
+  <div class="tabla-wrap"><table><thead><tr><th class="">Programa</th><th class="n">Estudiantes</th><th class="n">Tasa de deserción</th></tr></thead><tbody><tr><td class="">Ingeniería Industrial</td><td class="n">1.271</td><td class="n">40,2 %<span class="barra destacada"><span style="width:100.0%"></span></span></td></tr><tr><td class="">Ingeniería de Sistemas</td><td class="n">1.386</td><td class="n">38,2 %<span class="barra"><span style="width:95.1%"></span></span></td></tr><tr><td class="">Diseño Gráfico</td><td class="n">848</td><td class="n">35,6 %<span class="barra"><span style="width:88.6%"></span></span></td></tr><tr><td class="">Enfermería</td><td class="n">1.132</td><td class="n">31,3 %<span class="barra"><span style="width:77.8%"></span></span></td></tr><tr><td class="">Derecho</td><td class="n">1.447</td><td class="n">30,5 %<span class="barra"><span style="width:76.0%"></span></span></td></tr><tr><td class="">Administración de Empresas</td><td class="n">1.304</td><td class="n">29,7 %<span class="barra"><span style="width:73.8%"></span></span></td></tr><tr><td class="">Contaduría Pública</td><td class="n">1.162</td><td class="n">27,0 %<span class="barra"><span style="width:67.2%"></span></span></td></tr><tr><td class="">Psicología</td><td class="n">1.137</td><td class="n">26,0 %<span class="barra"><span style="width:64.8%"></span></span></td></tr></tbody></table></div>
+  <div class="hallazgo"><span class="etiqueta">Hallazgo</span><p><b>Ingeniería Industrial</b> presenta la tasa más alta: 40,2 % entre 1.271 estudiantes, frente a una tasa general de 32,4 %.</p></div>
+  <figure><figcaption><strong>Tasa de deserción por programa</strong><span>Proporción de desertores en cada programa académico.</span></figcaption><img src="../Data/processed/graficos/tasa_desercion_por_programa.png" alt="Tasa de deserción por programa"></figure>
+
+  <h3>2. ¿Hay diferencia entre becados y no becados?</h3>
+  <p class="sub">Comparación de la tasa de deserción según beca.</p>
+  <div class="tabla-wrap"><table><thead><tr><th class="">Beca</th><th class="n">Estudiantes</th><th class="n">Tasa de deserción</th></tr></thead><tbody><tr><td class="">no</td><td class="n">7.004</td><td class="n">36,4 %<span class="barra destacada"><span style="width:100.0%"></span></span></td></tr><tr><td class="">sí</td><td class="n">2.683</td><td class="n">21,9 %<span class="barra"><span style="width:60.2%"></span></span></td></tr></tbody></table></div>
+  <div class="hallazgo"><span class="etiqueta">Hallazgo</span><p>La deserción es menor en el grupo beca = <b>sí</b>, con una diferencia de 14,5 puntos porcentuales. Es una asociación: no prueba que la beca cause la permanencia.</p></div>
+
+  <h3>3. ¿Qué jornada tiene el menor promedio acumulado?</h3>
+  <p class="sub">Promedio acumulado en escala de 0 a 5.</p>
+  <div class="tabla-wrap"><table><thead><tr><th class="">Jornada</th><th class="n">Estudiantes</th><th class="n">Promedio acumulado</th></tr></thead><tbody><tr><td class="">Nocturna</td><td class="n">2.666</td><td class="n">3,46<span class="barra destacada"><span style="width:93.0%"></span></span></td></tr><tr><td class="">Fin de semana</td><td class="n">949</td><td class="n">3,70<span class="barra"><span style="width:99.5%"></span></span></td></tr><tr><td class="">Diurna</td><td class="n">6.072</td><td class="n">3,72<span class="barra"><span style="width:100.0%"></span></span></td></tr></tbody></table></div>
+  <div class="hallazgo"><span class="etiqueta">Hallazgo</span><p><b>Nocturna</b> registra el menor promedio acumulado: 3,46.</p></div>
+
+  <h3>4. Materias reprobadas: desertores frente a activos</h3>
+  <p class="sub">Se excluyen los graduados porque no pertenecen a ninguno de los dos grupos comparados.</p>
+  <div class="tabla-wrap"><table><thead><tr><th class="">Estado</th><th class="n">Estudiantes</th><th class="n">Materias reprobadas (promedio)</th></tr></thead><tbody><tr><td class="">Activo</td><td class="n">5.692</td><td class="n">0,62<span class="barra"><span style="width:20.3%"></span></span></td></tr><tr><td class="">Desertor</td><td class="n">3.136</td><td class="n">3,07<span class="barra destacada"><span style="width:100.0%"></span></span></td></tr></tbody></table></div>
+  <div class="hallazgo"><span class="etiqueta">Hallazgo</span><p>Los desertores reprobaron en promedio <b>3,07</b> materias, frente a 0,62 de los activos.</p></div>
+
+  <h3>5. ¿La deserción aumenta conforme baja la asistencia?</h3>
+  <p class="sub">Q1 agrupa la asistencia más baja y Q4 la más alta. Cada cuartil tiene un tamaño parecido.</p>
+  <div class="tabla-wrap"><table><thead><tr><th class="">Cuartil</th><th class="n">Asistencia promedio</th><th class="n">Estudiantes</th><th class="n">Tasa de deserción</th></tr></thead><tbody><tr><td class="">Q1</td><td class="n">73,9 %</td><td class="n">2.385</td><td class="n">61,9 %<span class="barra destacada"><span style="width:100.0%"></span></span></td></tr><tr><td class="">Q2</td><td class="n">84,4 %</td><td class="n">2.386</td><td class="n">36,7 %<span class="barra"><span style="width:59.3%"></span></span></td></tr><tr><td class="">Q3</td><td class="n">91,3 %</td><td class="n">2.348</td><td class="n">20,7 %<span class="barra"><span style="width:33.5%"></span></span></td></tr><tr><td class="">Q4</td><td class="n">98,7 %</td><td class="n">2.371</td><td class="n">9,4 %<span class="barra"><span style="width:15.3%"></span></span></td></tr></tbody></table></div>
+  <div class="hallazgo"><span class="etiqueta">Hallazgo</span><p>La deserción <b>aumenta</b> cuando baja la asistencia: 61,9 % en Q1 frente a 9,4 % en Q4. El patrón muestra asociación, no causa.</p></div>
+  <figure><figcaption><strong>Tasa de deserción por cuartil de asistencia</strong><span>Q1 = asistencia más baja · Q4 = asistencia más alta.</span></figcaption><img src="../Data/processed/graficos/tasa_desercion_por_asistencia.png" alt="Tasa de deserción por cuartil de asistencia"></figure>
+</div>
+  </div>
+</section>
+
+<section id="reflexiones" class="seccion">
+  <div class="contenedor">
+    <header class="seccion-cab">
+      <span class="numero">04</span>
+      <div>
+        <p class="kicker">Alcance</p>
+        <h2>Lo que los datos no dicen</h2>
+        <p class="intro">Tres límites que deben tenerse en cuenta antes de tomar decisiones con estos resultados.</p>
+      </div>
+    </header>
+    <div class="bloque rejilla">
+  <div class="tarjeta"><p class="kicker">Reflexión 1</p><h3>Asociación no es causalidad</h3>
+    <p>Que los becados deserten menos no prueba que la beca los retenga. Las becas suelen darse a
+    estudiantes con buen rendimiento, que ya tenían menos riesgo. Para hablar de causa habría que
+    comparar grupos iguales en todo, excepto en la beca.</p></div>
+  <div class="tarjeta"><p class="kicker">Reflexión 2</p><h3>motivo_retiro no sirve para predecir</h3>
+    <p>Solo se conoce después de que el estudiante deserta. Usarlo en un modelo sería predecir con
+    información del futuro, que nunca estaría disponible a tiempo.</p></div>
+  <div class="tarjeta"><p class="kicker">Reflexión 3</p><h3>Variables sensibles</h3>
+    <p>Género, estrato y ciudad pueden reflejar desigualdades sociales. Las alertas deben basarse en
+    señales académicas, como la asistencia, y estas variables usarse solo para vigilar que el apoyo sea justo.</p></div>
+</div>
+  </div>
+</section>
+
+<footer><div class="contenedor">
+  <span>Erica Avendaño A · CESDE · Análisis y Desarrollo de Software</span>
+  <span>Datos sintéticos generados para el taller · <a href="index.html">Volver al inicio</a></span>
+</div></footer>
+</body>
+</html>
